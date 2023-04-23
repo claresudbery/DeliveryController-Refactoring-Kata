@@ -5,12 +5,12 @@ namespace DeliveryController
 {
     public interface IEmailGateway
     {
-        void send(string address, string subject, string message);
+        void Send(string address, string subject, string message);
     }
 
     public class EmailGateway : IEmailGateway
     {
-        public void send(string address, string subject, string message)
+        public void Send(string address, string subject, string message)
         {
             var smtpClient = new SmtpClient("localhost")
             {
