@@ -70,7 +70,7 @@ namespace DeliveryControllerTest
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
                 this, 
-                new MapService());
+                this);
             _salmonDelivery01.Arrived = false;
             var initialArrivedVal = _salmonDelivery01.Arrived;
             
@@ -89,7 +89,7 @@ namespace DeliveryControllerTest
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
                 this, 
-                new MapService());
+                this);
             var deliveryTime = _salmonDeliveryTime01.AddMinutes(7);
             _salmonDelivery01.OnTime = false;
             var initialOnTimeVal = _salmonDelivery01.OnTime;
@@ -109,7 +109,7 @@ namespace DeliveryControllerTest
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
                 this, 
-                new MapService());
+                this);
             var deliveryTime = _salmonDeliveryTime01.AddMinutes(11);
             
             // Act
@@ -126,7 +126,7 @@ namespace DeliveryControllerTest
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
                 this, 
-                new MapService());
+                this);
             _emailSent = false;
             var initialEmailStatus = _emailSent;
             
@@ -145,7 +145,7 @@ namespace DeliveryControllerTest
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
                 this, 
-                new MapService());
+                this);
             _averageSpeedUpdated = false;
             
             // Act
@@ -162,7 +162,7 @@ namespace DeliveryControllerTest
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
                 this, 
-                new MapService());
+                this);
             _averageSpeedUpdated = false;
             
             // Act
