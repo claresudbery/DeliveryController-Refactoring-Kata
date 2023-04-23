@@ -53,7 +53,7 @@ namespace DeliveryController
 
             if (nextDelivery != null)
             {
-                var nextEta = _mapService.CalculateETA(deliveryEvent.Location, nextDelivery.Location);
+                var nextEta = _mapService.CalculateEta(deliveryEvent.Location, nextDelivery.Location);
                 var message =
                     $"Your delivery to {nextDelivery.Location} is next, estimated time of arrival is in {nextEta} minutes. Be ready!";
                 _emailGateway.Send(nextDelivery.ContactEmail, "Your delivery will arrive soon", message);

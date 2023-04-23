@@ -7,7 +7,7 @@ namespace DeliveryController
         // in km/h
         private double _averageSpeed = 50.0;
 
-        public double CalculateETA(Location location1, Location location2)
+        public double CalculateEta(Location location1, Location location2)
         {
             var distance = this.CalculateDistance(location1, location2);
             return distance / this._averageSpeed * MINUTES_PER_HOUR;
