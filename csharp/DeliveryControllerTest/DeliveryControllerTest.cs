@@ -5,7 +5,7 @@ using Xunit;
 
 namespace DeliveryControllerTest
 {
-    public class DeliveryControllerTest
+    public class DeliveryControllerTest: IEmailGateway
     {
         private readonly Delivery _salmonDelivery;
         private readonly List<Delivery> _testDeliverySchedule;
@@ -20,7 +20,7 @@ namespace DeliveryControllerTest
                 contactEmail: "Sally@Sally.co.uk",
                 location: salmonDeliveryLocation,
                 timeOfDelivery: salmonDeliveryTime,
-                arrived: true,
+                arrived: false,
                 onTime: true);
             _testDeliverySchedule = new List<Delivery> { _salmonDelivery };
             _salmonDeliveryEvent = new DeliveryEvent(
@@ -34,12 +34,20 @@ namespace DeliveryControllerTest
         [Fact]
         public void Test_UpdateDelivery_UpdatesDelivery_ToArrived()
         {
-            var controller = new DeliveryController.DeliveryController(_testDeliverySchedule);
+            var controller = new DeliveryController.DeliveryController(
+                _testDeliverySchedule, 
+                this, 
+                new MapService());
             
             Assert.False(_salmonDelivery.Arrived);
             controller.UpdateDelivery(_salmonDeliveryEvent);
             
             Assert.True(_salmonDelivery.Arrived);
+        }
+
+        void IEmailGateway.Send(string address, string subject, string message)
+        {
+            // Do nothing
         }
     }
 }
