@@ -71,7 +71,7 @@ namespace DeliveryControllerTest
             // Arrange
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                this, 
+                new MockEmailGateway(), 
                 this);
             _salmonDelivery01.Arrived = false;
             var initialArrivedVal = _salmonDelivery01.Arrived;
@@ -90,7 +90,7 @@ namespace DeliveryControllerTest
             // Arrange
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                this, 
+                new MockEmailGateway(), 
                 this);
             var deliveryTime = _salmonDeliveryTime01.AddMinutes(7);
             _salmonDelivery01.OnTime = false;
@@ -110,7 +110,7 @@ namespace DeliveryControllerTest
             // Arrange
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                this, 
+                new MockEmailGateway(), 
                 this);
             var deliveryTime = _salmonDeliveryTime01.AddMinutes(11);
             
@@ -148,7 +148,7 @@ namespace DeliveryControllerTest
             // Arrange
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                this, 
+                new MockEmailGateway(), 
                 this);
             _averageSpeedUpdated = false;
             
@@ -165,7 +165,7 @@ namespace DeliveryControllerTest
             // Arrange
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                this, 
+                new MockEmailGateway(), 
                 this);
             _averageSpeedUpdated = false;
             
@@ -182,7 +182,7 @@ namespace DeliveryControllerTest
             // Arrange
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                this, 
+                new MockEmailGateway(), 
                 this);
             _averageSpeedUpdated = false;
             var initialSpeedStatus = _averageSpeedUpdated;
