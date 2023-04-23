@@ -6,13 +6,13 @@ namespace DeliveryController
 {
     public class DeliveryController
     {
-        private readonly EmailGateway _emailGateway;
+        private readonly IEmailGateway _emailGateway;
         private readonly MapService _mapService;
         public List<Delivery> DeliverySchedule { get; }
 
         public DeliveryController(
             List<Delivery> deliverySchedule, 
-            EmailGateway emailGateway)
+            IEmailGateway emailGateway)
         {
             DeliverySchedule = deliverySchedule;
             _emailGateway = emailGateway;
