@@ -129,9 +129,10 @@ namespace DeliveryControllerTest
                 this);
             _emailSent = false;
             var initialEmailStatus = _emailSent;
+            var dummyDeliveryEvent = MakeSalmonDeliveryEvent01(_salmonDeliveryTime01);
             
             // Act
-            controller.UpdateDelivery(_salmonDeliveryEvent01);
+            controller.UpdateDelivery(dummyDeliveryEvent);
             
             // Assert
             Assert.True(_emailSent);
