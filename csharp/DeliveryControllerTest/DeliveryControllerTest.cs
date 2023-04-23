@@ -35,6 +35,8 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_UpdatesDelivery_ToArrived()
         {
             var controller = new DeliveryController.DeliveryController(_testDeliverySchedule);
+            
+            Assert.False(_salmonDelivery.Arrived);
             controller.UpdateDelivery(_salmonDeliveryEvent);
             
             Assert.True(_salmonDelivery.Arrived);
