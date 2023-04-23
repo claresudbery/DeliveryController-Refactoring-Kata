@@ -33,14 +33,17 @@ namespace DeliveryControllerTest
         [Fact]
         public void Test_UpdateDelivery_UpdatesDelivery_ToArrived()
         {
+            // Arrange
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
                 this, 
                 new MapService());
-            
             Assert.False(_salmonDelivery.Arrived);
+            
+            // Act
             controller.UpdateDelivery(_salmonDeliveryEvent);
             
+            // Assert
             Assert.True(_salmonDelivery.Arrived);
         }
 
