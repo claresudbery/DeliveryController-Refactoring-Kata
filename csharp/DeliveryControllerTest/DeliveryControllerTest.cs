@@ -6,7 +6,7 @@ using Xunit;
 
 namespace DeliveryControllerTest
 {
-    public class DeliveryControllerTest: IEmailGateway, IMapService
+    public class DeliveryControllerTest: IMapService
     {
         private readonly Delivery _salmonDelivery01;
         private readonly Delivery _salmonDelivery02;
@@ -18,8 +18,6 @@ namespace DeliveryControllerTest
         private readonly Location _salmonDeliveryLocation = new Location((float)12.2, (float)13.3);
         private const string SalmonDeliveryId01 = "SalmonDelivery01";
         private const string SalmonDeliveryId02 = "SalmonDelivery02";
-        private bool _emailSent = false;
-        private string _emailMessage = "";
         private bool _averageSpeedUpdated = false;
 
         public DeliveryControllerTest()
@@ -130,7 +128,7 @@ namespace DeliveryControllerTest
                 _testDeliverySchedule, 
                 mockEmailGateway, 
                 this);
-            _emailSent = false;
+            mockEmailGateway.EmailSent = false;
             var initialEmailStatus = mockEmailGateway.EmailSent;
             var dummyDeliveryEvent = MakeSalmonDeliveryEvent01(_salmonDeliveryTime01);
             
@@ -218,12 +216,6 @@ namespace DeliveryControllerTest
             Assert.Contains(
                 StubMapService.StubEta.ToString(CultureInfo.InvariantCulture),
                 mockEmailGateway.EmailMessage);
-        }
-
-        void IEmailGateway.Send(string address, string subject, string message)
-        {
-            _emailSent = true;
-            _emailMessage = message;
         }
 
         public double CalculateEta(Location location1, Location location2)
