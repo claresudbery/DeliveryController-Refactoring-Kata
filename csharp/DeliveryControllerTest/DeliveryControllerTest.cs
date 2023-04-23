@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using DeliveryController;
 using Xunit;
 
@@ -18,7 +19,9 @@ namespace DeliveryControllerTest
         private const string SalmonDeliveryId01 = "SalmonDelivery01";
         private const string SalmonDeliveryId02 = "SalmonDelivery02";
         private bool _emailSent = false;
+        private string _emailMessage = "";
         private bool _averageSpeedUpdated = false;
+        private const double _stubEta = 23.45;
 
         public DeliveryControllerTest()
         {
@@ -194,15 +197,37 @@ namespace DeliveryControllerTest
             Assert.NotEqual(_averageSpeedUpdated, initialSpeedStatus);
         }
 
+        [Fact]
+        public void Test_UpdateDelivery_SendsEmail_ReNextDelivery_WhenMultipleDeliveries()
+        {
+            // Arrange
+            var controller = new DeliveryController.DeliveryController(
+                _testDeliverySchedule, 
+                this, 
+                this);
+            _emailSent = false;
+            var initialEmailStatus = _emailSent;
+            
+            // Act
+            controller.UpdateDelivery(_salmonDeliveryEvent01);
+            
+            // Assert
+            Assert.True(_emailSent);
+            Assert.NotEqual(_emailSent, initialEmailStatus);
+            Assert.Contains(
+                _stubEta.ToString(CultureInfo.InvariantCulture),
+                _emailMessage);
+        }
+
         void IEmailGateway.Send(string address, string subject, string message)
         {
             _emailSent = true;
+            _emailMessage = message;
         }
 
         public double CalculateEta(Location location1, Location location2)
         {
-            // Do nothing
-            return 0;
+            return _stubEta;
         }
 
         void IMapService.UpdateAverageSpeed(Location location1, Location location2, TimeSpan elapsedTime)
