@@ -21,7 +21,6 @@ namespace DeliveryControllerTest
         private bool _emailSent = false;
         private string _emailMessage = "";
         private bool _averageSpeedUpdated = false;
-        private const double _stubEta = 23.45;
 
         public DeliveryControllerTest()
         {
@@ -204,7 +203,7 @@ namespace DeliveryControllerTest
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
                 this, 
-                this);
+                new StubMapService());
             _emailSent = false;
             var initialEmailStatus = _emailSent;
             
@@ -215,7 +214,7 @@ namespace DeliveryControllerTest
             Assert.True(_emailSent);
             Assert.NotEqual(_emailSent, initialEmailStatus);
             Assert.Contains(
-                _stubEta.ToString(CultureInfo.InvariantCulture),
+                StubMapService.StubEta.ToString(CultureInfo.InvariantCulture),
                 _emailMessage);
         }
 
@@ -227,7 +226,7 @@ namespace DeliveryControllerTest
 
         public double CalculateEta(Location location1, Location location2)
         {
-            return _stubEta;
+            return 0;
         }
 
         void IMapService.UpdateAverageSpeed(Location location1, Location location2, TimeSpan elapsedTime)
