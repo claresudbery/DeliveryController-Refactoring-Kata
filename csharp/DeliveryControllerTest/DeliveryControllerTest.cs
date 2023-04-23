@@ -17,8 +17,6 @@ namespace DeliveryControllerTest
         private readonly Location _salmonDeliveryLocation = new Location((float)12.2, (float)13.3);
         private const string SalmonDeliveryId01 = "SalmonDelivery01";
         private const string SalmonDeliveryId02 = "SalmonDelivery02";
-        private bool _emailSent = false;
-        private bool _averageSpeedUpdated = false;
 
         public DeliveryControllerTest()
         {
