@@ -201,22 +201,23 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_SendsEmail_ReNextDelivery_WhenMultipleDeliveries()
         {
             // Arrange
+            MockEmailGateway mockEmailGateway = new MockEmailGateway();
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                this, 
+                mockEmailGateway, 
                 new StubMapService());
-            _emailSent = false;
-            var initialEmailStatus = _emailSent;
+            mockEmailGateway.EmailSent = false;
+            var initialEmailStatus = mockEmailGateway.EmailSent;
             
             // Act
             controller.UpdateDelivery(_salmonDeliveryEvent01);
             
             // Assert
-            Assert.True(_emailSent);
-            Assert.NotEqual(_emailSent, initialEmailStatus);
+            Assert.True(mockEmailGateway.EmailSent);
+            Assert.NotEqual(mockEmailGateway.EmailSent, initialEmailStatus);
             Assert.Contains(
                 StubMapService.StubEta.ToString(CultureInfo.InvariantCulture),
-                _emailMessage);
+                mockEmailGateway.EmailMessage);
         }
 
         void IEmailGateway.Send(string address, string subject, string message)
