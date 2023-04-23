@@ -7,28 +7,37 @@ namespace DeliveryControllerTest
 {
     public class DeliveryControllerTest
     {
-        [Fact]
-        public void Test_UpdateDelivery_UpdatesDelivery_ToArrived()
+        private readonly Delivery _salmonDelivery;
+        private readonly List<Delivery> _testDeliverySchedule;
+        private readonly DeliveryEvent _salmonDeliveryEvent;
+
+        public DeliveryControllerTest()
         {
-            const string salmonDeliveryId = "SalmonDelivery01";
             var salmonDeliveryTime = new DateTime(2023, 12, 31);
             var salmonDeliveryLocation = new Location((float)12.2, (float)13.3);
-            var delivery = new Delivery(
-                id: salmonDeliveryId,
+            _salmonDelivery = new Delivery(
+                id: SalmonDeliveryId,
                 contactEmail: "Sally@Sally.co.uk",
                 location: salmonDeliveryLocation,
                 timeOfDelivery: salmonDeliveryTime,
                 arrived: true,
                 onTime: true);
-            var deliverySchedule = new List<Delivery> { delivery };
-            var controller = new DeliveryController.DeliveryController(deliverySchedule);
-            var deliveryEvent = new DeliveryEvent(
-                id: salmonDeliveryId, 
+            _testDeliverySchedule = new List<Delivery> { _salmonDelivery };
+            _salmonDeliveryEvent = new DeliveryEvent(
+                id: SalmonDeliveryId, 
                 timeOfDelivery: salmonDeliveryTime, 
                 location: salmonDeliveryLocation);
-            controller.UpdateDelivery(deliveryEvent);
+        }
+
+        private const string SalmonDeliveryId = "SalmonDelivery01";
+
+        [Fact]
+        public void Test_UpdateDelivery_UpdatesDelivery_ToArrived()
+        {
+            var controller = new DeliveryController.DeliveryController(_testDeliverySchedule);
+            controller.UpdateDelivery(_salmonDeliveryEvent);
             
-            Assert.True(delivery.Arrived);
+            Assert.True(_salmonDelivery.Arrived);
         }
     }
 }
