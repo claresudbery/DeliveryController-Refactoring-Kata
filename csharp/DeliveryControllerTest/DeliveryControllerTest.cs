@@ -13,6 +13,7 @@ namespace DeliveryControllerTest
         private readonly DateTime _salmonDeliveryTime = new DateTime(2023, 12, 31);
         private readonly Location _salmonDeliveryLocation = new Location((float)12.2, (float)13.3);
         private const string SalmonDeliveryId = "SalmonDelivery01";
+        private bool _emailSent = false;
 
         public DeliveryControllerTest()
         {
@@ -94,9 +95,28 @@ namespace DeliveryControllerTest
             Assert.False(_salmonDelivery.OnTime);
         }
 
+        [Fact]
+        public void Test_UpdateDelivery_SendsEmail()
+        {
+            // Arrange
+            var controller = new DeliveryController.DeliveryController(
+                _testDeliverySchedule, 
+                this, 
+                new MapService());
+            _emailSent = false;
+            var initialEmailStatus = _emailSent;
+            
+            // Act
+            controller.UpdateDelivery(_salmonDeliveryEvent);
+            
+            // Assert
+            Assert.True(_emailSent);
+            Assert.NotEqual(_emailSent, initialEmailStatus);
+        }
+
         void IEmailGateway.Send(string address, string subject, string message)
         {
-            // Do nothing
+            _emailSent = true;
         }
     }
 }
