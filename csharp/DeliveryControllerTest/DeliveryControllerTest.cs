@@ -125,20 +125,21 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_SendsEmail()
         {
             // Arrange
+            MockEmailGateway mockEmailGateway = new MockEmailGateway();
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                this, 
+                mockEmailGateway, 
                 this);
             _emailSent = false;
-            var initialEmailStatus = _emailSent;
+            var initialEmailStatus = mockEmailGateway.EmailSent;
             var dummyDeliveryEvent = MakeSalmonDeliveryEvent01(_salmonDeliveryTime01);
             
             // Act
             controller.UpdateDelivery(dummyDeliveryEvent);
             
             // Assert
-            Assert.True(_emailSent);
-            Assert.NotEqual(_emailSent, initialEmailStatus);
+            Assert.True(mockEmailGateway.EmailSent);
+            Assert.NotEqual(mockEmailGateway.EmailSent, initialEmailStatus);
         }
 
         [Fact]
