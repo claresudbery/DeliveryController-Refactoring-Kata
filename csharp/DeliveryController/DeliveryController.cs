@@ -10,10 +10,12 @@ namespace DeliveryController
         private readonly MapService _mapService;
         public List<Delivery> DeliverySchedule { get; }
 
-        public DeliveryController(List<Delivery> deliverySchedule)
+        public DeliveryController(
+            List<Delivery> deliverySchedule, 
+            EmailGateway emailGateway)
         {
             DeliverySchedule = deliverySchedule;
-            _emailGateway = new EmailGateway();
+            _emailGateway = emailGateway;
             _mapService = new MapService();
         }
         
