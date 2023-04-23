@@ -128,7 +128,7 @@ namespace DeliveryControllerTest
                 _testDeliverySchedule, 
                 mockEmailGateway, 
                 this);
-            mockEmailGateway.EmailSent = false;
+            mockEmailGateway.Reset();
             var initialEmailStatus = mockEmailGateway.EmailSent;
             var dummyDeliveryEvent = MakeSalmonDeliveryEvent01(_salmonDeliveryTime01);
             
@@ -204,7 +204,7 @@ namespace DeliveryControllerTest
                 _testDeliverySchedule, 
                 mockEmailGateway, 
                 new StubMapService());
-            mockEmailGateway.EmailSent = false;
+            mockEmailGateway.Reset();
             var initialEmailStatus = mockEmailGateway.EmailSent;
             
             // Act
