@@ -7,35 +7,50 @@ namespace DeliveryControllerTest
 {
     public class DeliveryControllerTest: IEmailGateway, IMapService
     {
-        private readonly Delivery _salmonDelivery;
+        private readonly Delivery _salmonDelivery01;
+        private readonly Delivery _salmonDelivery02;
         private readonly List<Delivery> _testDeliverySchedule;
-        private readonly DeliveryEvent _salmonDeliveryEvent;
-        private readonly DateTime _salmonDeliveryTime = new DateTime(2023, 12, 31);
+        private readonly DeliveryEvent _salmonDeliveryEvent01;
+        private readonly DeliveryEvent _salmonDeliveryEvent02;
+        private readonly DateTime _salmonDeliveryTime01 = new DateTime(2023, 12, 31, 14, 05, 0);
+        private readonly DateTime _salmonDeliveryTime02 = new DateTime(2023, 12, 31, 15, 07, 0);
         private readonly Location _salmonDeliveryLocation = new Location((float)12.2, (float)13.3);
-        private const string SalmonDeliveryId = "SalmonDelivery01";
+        private const string SalmonDeliveryId01 = "SalmonDelivery01";
+        private const string SalmonDeliveryId02 = "SalmonDelivery02";
         private bool _emailSent = false;
         private bool _averageSpeedUpdated = false;
 
         public DeliveryControllerTest()
         {
-            _salmonDelivery = new Delivery(
-                id: SalmonDeliveryId,
+            _salmonDelivery01 = new Delivery(
+                id: SalmonDeliveryId01,
                 contactEmail: "Sally@Sally.co.uk",
                 location: _salmonDeliveryLocation,
-                timeOfDelivery: _salmonDeliveryTime,
+                timeOfDelivery: _salmonDeliveryTime01,
                 arrived: false,
                 onTime: false);
-            _testDeliverySchedule = new List<Delivery> { _salmonDelivery };
-            _salmonDeliveryEvent = new DeliveryEvent(
-                id: SalmonDeliveryId, 
-                timeOfDelivery: _salmonDeliveryTime, 
+            _salmonDelivery02 = new Delivery(
+                id: SalmonDeliveryId02,
+                contactEmail: "Sally@Sally.co.uk",
+                location: _salmonDeliveryLocation,
+                timeOfDelivery: _salmonDeliveryTime02,
+                arrived: false,
+                onTime: false);
+            _testDeliverySchedule = new List<Delivery> { _salmonDelivery01, _salmonDelivery02 };
+            _salmonDeliveryEvent01 = new DeliveryEvent(
+                id: SalmonDeliveryId01, 
+                timeOfDelivery: _salmonDeliveryTime01, 
+                location: _salmonDeliveryLocation);
+            _salmonDeliveryEvent02 = new DeliveryEvent(
+                id: SalmonDeliveryId02, 
+                timeOfDelivery: _salmonDeliveryTime02, 
                 location: _salmonDeliveryLocation);
         }
 
         private DeliveryEvent MakeSalmonDeliveryEvent(DateTime timeOfDelivery)
         {
             return new DeliveryEvent(
-                id: SalmonDeliveryId, 
+                id: SalmonDeliveryId01, 
                 timeOfDelivery: timeOfDelivery, 
                 location: _salmonDeliveryLocation);
         }
@@ -48,15 +63,15 @@ namespace DeliveryControllerTest
                 _testDeliverySchedule, 
                 this, 
                 new MapService());
-            _salmonDelivery.Arrived = false;
-            var initialArrivedVal = _salmonDelivery.Arrived;
+            _salmonDelivery01.Arrived = false;
+            var initialArrivedVal = _salmonDelivery01.Arrived;
             
             // Act
-            controller.UpdateDelivery(_salmonDeliveryEvent);
+            controller.UpdateDelivery(_salmonDeliveryEvent01);
             
             // Assert
-            Assert.True(_salmonDelivery.Arrived);
-            Assert.NotEqual(_salmonDelivery.Arrived, initialArrivedVal);
+            Assert.True(_salmonDelivery01.Arrived);
+            Assert.NotEqual(_salmonDelivery01.Arrived, initialArrivedVal);
         }
 
         [Fact]
@@ -67,16 +82,16 @@ namespace DeliveryControllerTest
                 _testDeliverySchedule, 
                 this, 
                 new MapService());
-            var deliveryTime = _salmonDeliveryTime.AddMinutes(7);
-            _salmonDelivery.OnTime = false;
-            var initialOnTimeVal = _salmonDelivery.OnTime;
+            var deliveryTime = _salmonDeliveryTime01.AddMinutes(7);
+            _salmonDelivery01.OnTime = false;
+            var initialOnTimeVal = _salmonDelivery01.OnTime;
             
             // Act
             controller.UpdateDelivery(MakeSalmonDeliveryEvent(deliveryTime));
             
             // Assert
-            Assert.True(_salmonDelivery.OnTime);
-            Assert.NotEqual(_salmonDelivery.OnTime, initialOnTimeVal);
+            Assert.True(_salmonDelivery01.OnTime);
+            Assert.NotEqual(_salmonDelivery01.OnTime, initialOnTimeVal);
         }
 
         [Fact]
@@ -87,13 +102,13 @@ namespace DeliveryControllerTest
                 _testDeliverySchedule, 
                 this, 
                 new MapService());
-            var deliveryTime = _salmonDeliveryTime.AddMinutes(11);
+            var deliveryTime = _salmonDeliveryTime01.AddMinutes(11);
             
             // Act
             controller.UpdateDelivery(MakeSalmonDeliveryEvent(deliveryTime));
             
             // Assert
-            Assert.False(_salmonDelivery.OnTime);
+            Assert.False(_salmonDelivery01.OnTime);
         }
 
         [Fact]
@@ -108,7 +123,7 @@ namespace DeliveryControllerTest
             var initialEmailStatus = _emailSent;
             
             // Act
-            controller.UpdateDelivery(_salmonDeliveryEvent);
+            controller.UpdateDelivery(_salmonDeliveryEvent01);
             
             // Assert
             Assert.True(_emailSent);
@@ -126,7 +141,24 @@ namespace DeliveryControllerTest
             _averageSpeedUpdated = false;
             
             // Act
-            controller.UpdateDelivery(_salmonDeliveryEvent);
+            controller.UpdateDelivery(_salmonDeliveryEvent01);
+            
+            // Assert
+            Assert.False(_averageSpeedUpdated);
+        }
+
+        [Fact]
+        public void Test_UpdateDelivery_DoesNotUpdateAverageSpeed_WhenDeliveryOnTime_AndMultipleDeliveries()
+        {
+            // Arrange
+            var controller = new DeliveryController.DeliveryController(
+                _testDeliverySchedule, 
+                this, 
+                new MapService());
+            _averageSpeedUpdated = false;
+            
+            // Act
+            controller.UpdateDelivery(_salmonDeliveryEvent02);
             
             // Assert
             Assert.False(_averageSpeedUpdated);
