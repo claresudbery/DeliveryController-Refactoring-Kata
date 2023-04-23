@@ -38,13 +38,15 @@ namespace DeliveryControllerTest
                 _testDeliverySchedule, 
                 this, 
                 new MapService());
-            Assert.False(_salmonDelivery.Arrived);
+            _salmonDelivery.Arrived = false;
+            var initialArrivedVal = _salmonDelivery.Arrived;
             
             // Act
             controller.UpdateDelivery(_salmonDeliveryEvent);
             
             // Assert
             Assert.True(_salmonDelivery.Arrived);
+            Assert.NotEqual(_salmonDelivery.Arrived, initialArrivedVal);
         }
 
         void IEmailGateway.Send(string address, string subject, string message)
