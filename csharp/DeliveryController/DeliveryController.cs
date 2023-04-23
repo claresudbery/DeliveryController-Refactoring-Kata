@@ -56,10 +56,7 @@ namespace DeliveryController
                 var message =
                     $"Your delivery to {nextDelivery.Location} is next, estimated time of arrival is in {nextEta} minutes. Be ready!";
                 _emailGateway.Send(nextDelivery.ContactEmail, "Your delivery will arrive soon", message);
-
             }
         }
     }
-    
-
 }
