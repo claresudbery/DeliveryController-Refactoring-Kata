@@ -10,8 +10,6 @@ namespace DeliveryControllerTest
         private readonly Delivery _salmonDelivery01;
         private readonly Delivery _salmonDelivery02;
         private readonly List<Delivery> _testDeliverySchedule;
-        private readonly DeliveryEvent _salmonDeliveryEvent01;
-        private readonly DeliveryEvent _salmonDeliveryEvent02;
         private readonly DateTime _salmonDeliveryTime01 = new DateTime(2023, 12, 31, 14, 05, 0);
         private readonly DateTime _salmonDeliveryTime02 = new DateTime(2023, 12, 31, 15, 07, 0);
         private readonly Location _salmonDeliveryLocation = new Location((float)12.2, (float)13.3);
