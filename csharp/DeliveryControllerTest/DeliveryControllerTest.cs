@@ -10,6 +10,7 @@ namespace DeliveryControllerTest
         private readonly Delivery _salmonDelivery;
         private readonly List<Delivery> _testDeliverySchedule;
         private readonly DeliveryEvent _salmonDeliveryEvent;
+        private const string SalmonDeliveryId = "SalmonDelivery01";
 
         public DeliveryControllerTest()
         {
@@ -28,8 +29,6 @@ namespace DeliveryControllerTest
                 timeOfDelivery: salmonDeliveryTime, 
                 location: salmonDeliveryLocation);
         }
-
-        private const string SalmonDeliveryId = "SalmonDelivery01";
 
         [Fact]
         public void Test_UpdateDelivery_UpdatesDelivery_ToArrived()
