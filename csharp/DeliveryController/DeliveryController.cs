@@ -6,15 +6,18 @@ namespace DeliveryController
 {
     public class DeliveryController
     {
-        private readonly EmailGateway _emailGateway;
+        private readonly IEmailGateway _emailGateway;
         private readonly MapService _mapService;
         public List<Delivery> DeliverySchedule { get; }
 
-        public DeliveryController(List<Delivery> deliverySchedule)
+        public DeliveryController(
+            List<Delivery> deliverySchedule, 
+            IEmailGateway emailGateway, 
+            MapService mapService)
         {
             DeliverySchedule = deliverySchedule;
-            _emailGateway = new EmailGateway();
-            _mapService = new MapService();
+            _emailGateway = emailGateway;
+            _mapService = mapService;
         }
         
         public void UpdateDelivery(DeliveryEvent deliveryEvent)
@@ -33,7 +36,7 @@ namespace DeliveryController
                     }
                     delivery.TimeOfDelivery = deliveryEvent.TimeOfDelivery;
                     string message = $"Regarding your delivery today at {delivery.TimeOfDelivery}. How likely would you be to recommend this delivery service to a friend? Click <a href='url'>here</a>";
-                    _emailGateway.send(delivery.ContactEmail, "Your feedback is important to us", message);
+                    _emailGateway.Send(delivery.ContactEmail, "Your feedback is important to us", message);
                     if (DeliverySchedule.Count > i + 1)
                     {
                         nextDelivery = DeliverySchedule[i + 1];
@@ -50,11 +53,10 @@ namespace DeliveryController
 
             if (nextDelivery != null)
             {
-                var nextEta = _mapService.CalculateETA(deliveryEvent.Location, nextDelivery.Location);
+                var nextEta = _mapService.CalculateEta(deliveryEvent.Location, nextDelivery.Location);
                 var message =
                     $"Your delivery to {nextDelivery.Location} is next, estimated time of arrival is in {nextEta} minutes. Be ready!";
-                _emailGateway.send(nextDelivery.ContactEmail, "Your delivery will arrive soon", message);
-
+                _emailGateway.Send(nextDelivery.ContactEmail, "Your delivery will arrive soon", message);
             }
         }
     }

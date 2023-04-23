@@ -3,9 +3,9 @@ using System.Net.Mail;
 
 namespace DeliveryController
 {
-    public class EmailGateway   
+    public class EmailGateway : IEmailGateway
     {
-        public void send(string address, string subject, string message)
+        public void Send(string address, string subject, string message)
         {
             var smtpClient = new SmtpClient("localhost")
             {
