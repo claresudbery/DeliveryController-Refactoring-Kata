@@ -10,23 +10,23 @@ namespace DeliveryControllerTest
         private readonly Delivery _salmonDelivery;
         private readonly List<Delivery> _testDeliverySchedule;
         private readonly DeliveryEvent _salmonDeliveryEvent;
+        private readonly DateTime _salmonDeliveryTime = new DateTime(2023, 12, 31);
         private const string SalmonDeliveryId = "SalmonDelivery01";
 
         public DeliveryControllerTest()
         {
-            var salmonDeliveryTime = new DateTime(2023, 12, 31);
             var salmonDeliveryLocation = new Location((float)12.2, (float)13.3);
             _salmonDelivery = new Delivery(
                 id: SalmonDeliveryId,
                 contactEmail: "Sally@Sally.co.uk",
                 location: salmonDeliveryLocation,
-                timeOfDelivery: salmonDeliveryTime,
+                timeOfDelivery: _salmonDeliveryTime,
                 arrived: false,
-                onTime: true);
+                onTime: false);
             _testDeliverySchedule = new List<Delivery> { _salmonDelivery };
             _salmonDeliveryEvent = new DeliveryEvent(
                 id: SalmonDeliveryId, 
-                timeOfDelivery: salmonDeliveryTime, 
+                timeOfDelivery: _salmonDeliveryTime, 
                 location: salmonDeliveryLocation);
         }
 
@@ -47,6 +47,26 @@ namespace DeliveryControllerTest
             // Assert
             Assert.True(_salmonDelivery.Arrived);
             Assert.NotEqual(_salmonDelivery.Arrived, initialArrivedVal);
+        }
+
+        [Fact]
+        public void Test_UpdateDelivery_SetsOnTimeToTrue_IfDeliveryWithinTenMins()
+        {
+            // Arrange
+            var controller = new DeliveryController.DeliveryController(
+                _testDeliverySchedule, 
+                this, 
+                new MapService());
+            _salmonDelivery.OnTime = false;
+            _salmonDelivery.TimeOfDelivery = _salmonDeliveryTime.AddMinutes(7);
+            var initialOnTimeVal = _salmonDelivery.OnTime;
+            
+            // Act
+            controller.UpdateDelivery(_salmonDeliveryEvent);
+            
+            // Assert
+            Assert.True(_salmonDelivery.OnTime);
+            Assert.NotEqual(_salmonDelivery.OnTime, initialOnTimeVal);
         }
 
         void IEmailGateway.Send(string address, string subject, string message)
