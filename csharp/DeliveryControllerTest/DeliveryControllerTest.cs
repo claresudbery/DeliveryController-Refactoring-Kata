@@ -11,15 +11,15 @@ namespace DeliveryControllerTest
         private readonly List<Delivery> _testDeliverySchedule;
         private readonly DeliveryEvent _salmonDeliveryEvent;
         private readonly DateTime _salmonDeliveryTime = new DateTime(2023, 12, 31);
+        private readonly Location _salmonDeliveryLocation = new Location((float)12.2, (float)13.3);
         private const string SalmonDeliveryId = "SalmonDelivery01";
 
         public DeliveryControllerTest()
         {
-            var salmonDeliveryLocation = new Location((float)12.2, (float)13.3);
             _salmonDelivery = new Delivery(
                 id: SalmonDeliveryId,
                 contactEmail: "Sally@Sally.co.uk",
-                location: salmonDeliveryLocation,
+                location: _salmonDeliveryLocation,
                 timeOfDelivery: _salmonDeliveryTime,
                 arrived: false,
                 onTime: false);
@@ -27,7 +27,15 @@ namespace DeliveryControllerTest
             _salmonDeliveryEvent = new DeliveryEvent(
                 id: SalmonDeliveryId, 
                 timeOfDelivery: _salmonDeliveryTime, 
-                location: salmonDeliveryLocation);
+                location: _salmonDeliveryLocation);
+        }
+
+        private DeliveryEvent MakeSalmonDeliveryEvent(DateTime timeOfDelivery)
+        {
+            return new DeliveryEvent(
+                id: SalmonDeliveryId, 
+                timeOfDelivery: timeOfDelivery, 
+                location: _salmonDeliveryLocation);
         }
 
         [Fact]
@@ -57,16 +65,33 @@ namespace DeliveryControllerTest
                 _testDeliverySchedule, 
                 this, 
                 new MapService());
+            var deliveryTime = _salmonDeliveryTime.AddMinutes(7);
             _salmonDelivery.OnTime = false;
-            _salmonDelivery.TimeOfDelivery = _salmonDeliveryTime.AddMinutes(7);
             var initialOnTimeVal = _salmonDelivery.OnTime;
             
             // Act
-            controller.UpdateDelivery(_salmonDeliveryEvent);
+            controller.UpdateDelivery(MakeSalmonDeliveryEvent(deliveryTime));
             
             // Assert
             Assert.True(_salmonDelivery.OnTime);
             Assert.NotEqual(_salmonDelivery.OnTime, initialOnTimeVal);
+        }
+
+        [Fact]
+        public void Test_UpdateDelivery_SetsOnTimeToFalse_IfDeliveryAfterTenMins()
+        {
+            // Arrange
+            var controller = new DeliveryController.DeliveryController(
+                _testDeliverySchedule, 
+                this, 
+                new MapService());
+            var deliveryTime = _salmonDeliveryTime.AddMinutes(11);
+            
+            // Act
+            controller.UpdateDelivery(MakeSalmonDeliveryEvent(deliveryTime));
+            
+            // Assert
+            Assert.False(_salmonDelivery.OnTime);
         }
 
         void IEmailGateway.Send(string address, string subject, string message)
