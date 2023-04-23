@@ -2,7 +2,13 @@ using System;
 
 namespace DeliveryController
 {
-    public class MapService 
+    public interface IMapService
+    {
+        double CalculateEta(Location location1, Location location2);
+        void UpdateAverageSpeed(Location location1, Location location2, TimeSpan elapsedTime);
+    }
+
+    public class MapService : IMapService
     {
         // in km/h
         private double _averageSpeed = 50.0;
