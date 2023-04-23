@@ -3,11 +3,6 @@ using System.Net.Mail;
 
 namespace DeliveryController
 {
-    public interface IEmailGateway
-    {
-        void Send(string address, string subject, string message);
-    }
-
     public class EmailGateway : IEmailGateway
     {
         public void Send(string address, string subject, string message)
