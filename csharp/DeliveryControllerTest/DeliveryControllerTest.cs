@@ -47,10 +47,18 @@ namespace DeliveryControllerTest
                 location: _salmonDeliveryLocation);
         }
 
-        private DeliveryEvent MakeSalmonDeliveryEvent(DateTime timeOfDelivery)
+        private DeliveryEvent MakeSalmonDeliveryEvent01(DateTime timeOfDelivery)
         {
             return new DeliveryEvent(
                 id: SalmonDeliveryId01, 
+                timeOfDelivery: timeOfDelivery, 
+                location: _salmonDeliveryLocation);
+        }
+
+        private DeliveryEvent MakeSalmonDeliveryEvent02(DateTime timeOfDelivery)
+        {
+            return new DeliveryEvent(
+                id: SalmonDeliveryId02, 
                 timeOfDelivery: timeOfDelivery, 
                 location: _salmonDeliveryLocation);
         }
@@ -87,7 +95,7 @@ namespace DeliveryControllerTest
             var initialOnTimeVal = _salmonDelivery01.OnTime;
             
             // Act
-            controller.UpdateDelivery(MakeSalmonDeliveryEvent(deliveryTime));
+            controller.UpdateDelivery(MakeSalmonDeliveryEvent01(deliveryTime));
             
             // Assert
             Assert.True(_salmonDelivery01.OnTime);
@@ -105,7 +113,7 @@ namespace DeliveryControllerTest
             var deliveryTime = _salmonDeliveryTime01.AddMinutes(11);
             
             // Act
-            controller.UpdateDelivery(MakeSalmonDeliveryEvent(deliveryTime));
+            controller.UpdateDelivery(MakeSalmonDeliveryEvent01(deliveryTime));
             
             // Assert
             Assert.False(_salmonDelivery01.OnTime);
@@ -162,6 +170,27 @@ namespace DeliveryControllerTest
             
             // Assert
             Assert.False(_averageSpeedUpdated);
+        }
+
+        [Fact]
+        public void Test_UpdateDelivery_UpdatesAverageSpeed_WhenDeliveryLate_AndMultipleDeliveries()
+        {
+            // Arrange
+            var controller = new DeliveryController.DeliveryController(
+                _testDeliverySchedule, 
+                this, 
+                this);
+            _averageSpeedUpdated = false;
+            var initialSpeedStatus = _averageSpeedUpdated;
+            
+            var deliveryTime02 = _salmonDeliveryTime02.AddMinutes(11);
+            
+            // Act
+            controller.UpdateDelivery(MakeSalmonDeliveryEvent02(deliveryTime02));
+            
+            // Assert
+            Assert.True(_averageSpeedUpdated);
+            Assert.NotEqual(_averageSpeedUpdated, initialSpeedStatus);
         }
 
         void IEmailGateway.Send(string address, string subject, string message)
