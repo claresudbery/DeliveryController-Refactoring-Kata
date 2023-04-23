@@ -64,14 +64,12 @@ namespace DeliveryControllerTest
                 new EmailGateway(), 
                 new MapService());
             _salmonDelivery01.Arrived = false;
-            var initialArrivedValue = _salmonDelivery01.Arrived;
             
             // Act
             controller.UpdateDelivery(MakeSalmonDeliveryEvent01(_salmonDeliveryTime01));
             
             // Assert
             Assert.True(_salmonDelivery01.Arrived);
-            Assert.NotEqual(initialArrivedValue, _salmonDelivery01.Arrived);
         }
     }
 }
