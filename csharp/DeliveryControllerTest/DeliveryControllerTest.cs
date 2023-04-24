@@ -70,7 +70,7 @@ namespace DeliveryControllerTest
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
                 new MockEmailGateway(), 
-                this);
+                new MapService());
             _salmonDelivery01.Arrived = false;
             var initialArrivedVal = _salmonDelivery01.Arrived;
             
@@ -89,7 +89,7 @@ namespace DeliveryControllerTest
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
                 new MockEmailGateway(), 
-                this);
+                new MapService());
             var deliveryTime = _salmonDeliveryTime01.AddMinutes(7);
             _salmonDelivery01.OnTime = false;
             var initialOnTimeVal = _salmonDelivery01.OnTime;
@@ -109,7 +109,7 @@ namespace DeliveryControllerTest
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
                 new MockEmailGateway(), 
-                this);
+                new MapService());
             var deliveryTime = _salmonDeliveryTime01.AddMinutes(11);
             
             // Act
@@ -127,7 +127,7 @@ namespace DeliveryControllerTest
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
                 mockEmailGateway, 
-                this);
+                new MapService());
             mockEmailGateway.Reset();
             var initialEmailStatus = mockEmailGateway.EmailSent;
             var dummyDeliveryEvent = MakeSalmonDeliveryEvent01(_salmonDeliveryTime01);
