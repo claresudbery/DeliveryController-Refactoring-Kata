@@ -67,9 +67,10 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_UpdatesDelivery_ToArrived()
         {
             // Arrange
+            var dummyEmailGateway = new MockEmailGateway();
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                new MockEmailGateway(), 
+                dummyEmailGateway, 
                 new MapService());
             _salmonDelivery01.Arrived = false;
             var initialArrivedVal = _salmonDelivery01.Arrived;
@@ -86,9 +87,10 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_SetsOnTimeToTrue_IfDeliveryWithinTenMins()
         {
             // Arrange
+            var dummyEmailGateway = new MockEmailGateway();
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                new MockEmailGateway(), 
+                dummyEmailGateway, 
                 new MapService());
             var deliveryTime = _salmonDeliveryTime01.AddMinutes(7);
             _salmonDelivery01.OnTime = false;
@@ -106,9 +108,10 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_SetsOnTimeToFalse_IfDeliveryAfterTenMins()
         {
             // Arrange
+            var dummyEmailGateway = new MockEmailGateway();
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                new MockEmailGateway(), 
+                dummyEmailGateway, 
                 new MapService());
             var deliveryTime = _salmonDeliveryTime01.AddMinutes(11);
             
@@ -123,31 +126,33 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_SendsEmail()
         {
             // Arrange
-            MockEmailGateway mockEmailGateway = new MockEmailGateway();
+            MockEmailGateway spyEmailGateway = new MockEmailGateway();
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                mockEmailGateway, 
+                spyEmailGateway, 
                 new MapService());
-            mockEmailGateway.Reset();
-            var initialEmailStatus = mockEmailGateway.EmailSent;
+            spyEmailGateway.Reset();
+            var initialEmailStatus = spyEmailGateway.EmailSent;
             var dummyDeliveryEvent = MakeSalmonDeliveryEvent01(_salmonDeliveryTime01);
             
             // Act
             controller.UpdateDelivery(dummyDeliveryEvent);
             
             // Assert
-            Assert.True(mockEmailGateway.EmailSent);
-            Assert.NotEqual(mockEmailGateway.EmailSent, initialEmailStatus);
+            Assert.True(spyEmailGateway.EmailSent);
+            Assert.NotEqual(spyEmailGateway.EmailSent, initialEmailStatus);
         }
 
         [Fact]
         public void Test_UpdateDelivery_DoesNotUpdateAverageSpeed_WhenDeliveryOnTime()
         {
             // Arrange
+            var dummyEmailGateway = new MockEmailGateway();
+            var spyMapService = this;
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                new MockEmailGateway(), 
-                this);
+                dummyEmailGateway, 
+                spyMapService);
             _averageSpeedUpdated = false;
             
             // Act
@@ -161,10 +166,12 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_DoesNotUpdateAverageSpeed_WhenDeliveryOnTime_AndMultipleDeliveries()
         {
             // Arrange
+            var dummyEmailGateway = new MockEmailGateway();
+            var spyMapService = this;
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                new MockEmailGateway(), 
-                this);
+                dummyEmailGateway, 
+                spyMapService);
             _averageSpeedUpdated = false;
             
             // Act
@@ -178,10 +185,12 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_UpdatesAverageSpeed_WhenDeliveryLate_AndMultipleDeliveries()
         {
             // Arrange
+            var dummyEmailGateway = new MockEmailGateway();
+            var spyMapService = this;
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                new MockEmailGateway(), 
-                this);
+                dummyEmailGateway, 
+                spyMapService);
             _averageSpeedUpdated = false;
             var initialSpeedStatus = _averageSpeedUpdated;
             
@@ -199,23 +208,23 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_SendsEmail_ReNextDelivery_WhenMultipleDeliveries()
         {
             // Arrange
-            MockEmailGateway mockEmailGateway = new MockEmailGateway();
+            MockEmailGateway spyEmailGateway = new MockEmailGateway();
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                mockEmailGateway, 
+                spyEmailGateway, 
                 new StubMapService());
-            mockEmailGateway.Reset();
-            var initialEmailStatus = mockEmailGateway.EmailSent;
+            spyEmailGateway.Reset();
+            var initialEmailStatus = spyEmailGateway.EmailSent;
             
             // Act
             controller.UpdateDelivery(_salmonDeliveryEvent01);
             
             // Assert
-            Assert.True(mockEmailGateway.EmailSent);
-            Assert.NotEqual(mockEmailGateway.EmailSent, initialEmailStatus);
+            Assert.True(spyEmailGateway.EmailSent);
+            Assert.NotEqual(spyEmailGateway.EmailSent, initialEmailStatus);
             Assert.Contains(
                 StubMapService.StubEta.ToString(CultureInfo.InvariantCulture),
-                mockEmailGateway.EmailMessage);
+                spyEmailGateway.EmailMessage);
         }
 
         public double CalculateEta(Location location1, Location location2)
