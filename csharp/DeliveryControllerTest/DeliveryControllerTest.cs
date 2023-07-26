@@ -67,10 +67,10 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_UpdatesDelivery_ToArrived()
         {
             // Arrange
-            var dummyEmailGateway = new MockEmailGateway();
+            var stubEmailGateway = new MockEmailGateway();
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                dummyEmailGateway, 
+                stubEmailGateway, 
                 new MapService());
             _salmonDelivery01.Arrived = false;
             var initialArrivedVal = _salmonDelivery01.Arrived;
@@ -87,10 +87,10 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_SetsOnTimeToTrue_IfDeliveryWithinTenMins()
         {
             // Arrange
-            var dummyEmailGateway = new MockEmailGateway();
+            var stubEmailGateway = new MockEmailGateway();
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                dummyEmailGateway, 
+                stubEmailGateway, 
                 new MapService());
             var deliveryTime = _salmonDeliveryTime01.AddMinutes(7);
             _salmonDelivery01.OnTime = false;
@@ -108,11 +108,12 @@ namespace DeliveryControllerTest
         public void Test_UpdateDelivery_SetsOnTimeToFalse_IfDeliveryAfterTenMins()
         {
             // Arrange
-            var dummyEmailGateway = new MockEmailGateway();
+            var stubEmailGateway = new MockEmailGateway();
+            var dummyMapService = this;
             var controller = new DeliveryController.DeliveryController(
                 _testDeliverySchedule, 
-                dummyEmailGateway, 
-                new MapService());
+                stubEmailGateway, 
+                dummyMapService);
             var deliveryTime = _salmonDeliveryTime01.AddMinutes(11);
             
             // Act
